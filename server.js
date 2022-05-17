@@ -7,7 +7,7 @@ const cors = require('cors');
 const PORT = process.env.PORT || 5008;
 
 //temp require
-const Note = require('./Models/NoteModel');
+const NoteModel = require('./Models/NoteModel');
 
 //create the server instance
 let server = express();
@@ -24,10 +24,10 @@ server.get('/', async (req, res) => {
 
 server.post('/insert', async (req, res) => {
     try {
-        //let note = new Note({title:"title"});
-        //let savedNote = await Note.save(note);
-        let newNote = await Note.create({title:"title"});
-        let notes = Note.find();
+        console.log('insert', process.env.DB_URL);
+
+        await NoteModel.insert({title:"title"});
+        let notes = await NoteModel.find();
         res.status(201).json(notes);
     } catch (error) {
         console.log('error', error)
