@@ -1,13 +1,10 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
 const cors = require('cors');
+const { MongoClient } = require('mongodb');
 
 const PORT = process.env.PORT || 5008;
-
-//temp require
-const NoteModel = require('./Models/NoteModel');
 
 //create the server instance
 let server = express();
@@ -16,22 +13,28 @@ server.use(express.json());
 server.use(express.static(path.join(__dirname, '/build')));
 
 //connect to db
-mongoose.connect(process.env.DB_URL, () => { console.log('connected to mongodb atlas server') });
+const client = new MongoClient(process.env.DB_URL);
 
 server.get('/', async (req, res) => {
-    res.sendFile(path.join(__dirname,'/build','index.html'));
+    res.sendFile(path.join(__dirname, '/build', 'index.html'));
 })
+
+
 
 server.post('/insert', async (req, res) => {
     try {
-        console.log('insert', process.env.DB_URL);
-
-        await NoteModel.insert({title:"title"});
-        let notes = await NoteModel.find();
-        res.status(201).json(notes);
+        await client.connect();
+        console.log('connected to DB');
+        const db = client.db(process.env.DB_NAME);
+        const collection = db.collection('notes');
+        await collection.insertOne({title:"test", description:"test"});
+        let all = await collection.find();
+        res.status(201).json(all)
     } catch (error) {
         console.log('error', error)
-        res.status(500).json({error});
+        res.status(500).json({ error });
+    }finally{
+        client.close();
     }
 });
 
