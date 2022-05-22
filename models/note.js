@@ -1,5 +1,5 @@
 const { MongoClient, ObjectId } = require('mongodb');
-let client = new MongoClient(process.env.DB_URI);
+let client = new MongoClient(process.env.DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
 let db = process.env.DB_NAME;
 
 class Note {
