@@ -9,7 +9,7 @@ class Note {
     createdAt;
     isActive;
 
-    constructor(title = "default", description = "default") {
+    constructor(title = "", description = "") {
         this.title = title;
         this.description = description;
         this.createdAt = Date.now();
