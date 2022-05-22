@@ -49,7 +49,7 @@ NoteRouter.put('/:id', async (req, res) => {
     let {id} = req.params;
     let {title, description} = req.body;
     try {
-        let result = await new Note().UpdateNoteById(id, title, description);
+        let result = await new Note(title, description).UpdateNoteById(id);
         res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error });

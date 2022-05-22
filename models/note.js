@@ -1,6 +1,7 @@
-const { MongoClient, ObjectId } = require('mongodb');
-let client = new MongoClient(process.env.DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
-let db = process.env.DB_NAME;
+//const { MongoClient, ObjectId } = require('mongodb');
+// let client = new MongoClient(process.env.DB_URI,{ useNewUrlParser: true, useUnifiedTopology: true });
+// let db = process.env.DB_NAME;
+const DB = require('../utils/db');
 
 class Note {
     title;
@@ -17,72 +18,51 @@ class Note {
 
     async GetAllActiveNotes() {
         try {
-            await client.connect();
-            return await client.db(db).collection('notes').find({ isActive: true }).toArray();
+            return await new DB().FindAll('notes', { isActive: true });
         } catch (error) {
             return error;
-        } finally {
-            await client.close();
         }
     }
 
     async GetAllNotes() {
         try {
-            await client.connect();
-            return await client.db(db).collection('notes').find({}).toArray();
+            return await new DB().FindAll('notes');
         } catch (error) {
             return error;
-        } finally {
-            await client.close();
         }
     }
 
     async GetNoteByID(id) {
         try {
-            await client.connect();
-            return await client.db(db).collection('notes').findOne({ _id: ObjectId(id) });
+            return await new DB().FindByID('notes', id);
         } catch (error) {
-            //console.log({ error });
+            console.log(error);
             return error;
-        } finally {
-            await client.close();
         }
     }
 
     async InsertNewNote() {
         try {
-            await client.connect();
-            return await client.db(db).collection('notes').insertOne(this);
+            return await new DB().Insert('notes', this); 
         } catch (error) {
             return error;
-        } finally {
-            await client.close();
-        }
+        } 
     }
 
-    async UpdateNoteById(id, title, description) {
+    async UpdateNoteById(id) {
         try {
-            await client.connect();
-            return await client.db(db).collection('notes').updateOne(
-                { _id: ObjectId(id) },
-                { $set: { title, description } });
+            return await new DB().UpdateDocById('notes', id, this);
         } catch (error) {
+            console.log(error);
             return error;
-        } finally {
-            await client.close();
-        }
+        } 
     }
 
     async DeleteNote(id) {
         try {
-            await client.connect();
-            return await client.db(db).collection('notes').updateOne(
-                { _id: ObjectId(id) },
-                { $set: { isActive: false } });
+            return await new DB().DeactivateDocById('notes',id);
         } catch (error) {
             return error;
-        } finally {
-            await client.close();
         }
     }
 }
