@@ -4,6 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
+//Routes
+const NotesRoutes = require('./controllers/noteController');
+
 //Server initialize
 const PORT = process.env.PORT || 5008;
 const server = express();
@@ -17,7 +20,7 @@ server.get('/', async (req, res) => {
 });
 
 //routes
-server.use('/api/notes', require('./controllers/noteController'));
+server.use('/api/notes', NotesRoutes);
 
 
 
