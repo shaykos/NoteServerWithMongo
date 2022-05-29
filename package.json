@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run build:client && node server.js",
     "start:dev": "nodemon server.js",
     "publish:heroku": "git push heroku main",
+    "build:client": "cd client && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
